@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.Calendar;
 import java.util.Random;
 import java.util.TimeZone;
@@ -15,7 +17,7 @@ public class  MscService extends Service {
     class MscBinder extends Binder {
         void init(final MainActivity.MscConn conn, final int hour, final int minute, final int count,
                   final int delay, final int inteval, final int w, final int h) {
-            Log.d("MSC", "Service init " +
+            Logger.i("Service init " +
                     "(Hour:" + hour +
                     ")(Minute:" + minute +
                     ")(Count:" + count +
@@ -33,7 +35,7 @@ public class  MscService extends Service {
             int cMinute = cal.get(Calendar.MINUTE);
             int cSecond = cal.get(Calendar.SECOND);
             int millis = (hour * 60  + minute) * 60 - (cHour * 60  + cMinute) * 60 - cSecond - 1;
-            Log.d("MSC", "Start tap after " + (millis + 1) + " '");
+            Logger.i("Start tap after " + (millis + 1) + " '");
 
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -47,14 +49,14 @@ public class  MscService extends Service {
                     }
                     int cMinute = cal.get(Calendar.MINUTE);
                     int cSecond = cal.get(Calendar.SECOND);
-                    Log.d("MSC", "Current time " + cHour + ":" + cMinute + ":" + cSecond);
+                    Logger.i("Current time " + cHour + ":" + cMinute + ":" + cSecond);
                     if (cHour == hour && cMinute == minute) {
                         Random r = new Random();
                         int x = w * (r.nextInt(8) + 1) / 10;
                         int y = h - 30 - (r.nextInt(6) - 3);
                         try {
                             if (delay != 0) {
-                                Log.d("MSC", "Delay " + delay);
+                                Logger.i("Delay " + delay);
                                 Thread.sleep(delay);
                             }
                             for (int i = 0; i < count; i++) {
@@ -62,9 +64,9 @@ public class  MscService extends Service {
                                 Thread.sleep(inteval + r.nextInt(inteval / 4) - inteval / 8);
                             }
                         } catch (Exception e) {
-                            Log.d("MSC", e.toString());
+                            Logger.i(e.toString());
                         }
-                        Log.d("MSC", "Service Finished");
+                        Logger.i("Service Finished");
                         conn.finished();
                         return;
                     }

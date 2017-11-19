@@ -16,11 +16,13 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
+
 public class MainActivity extends Activity {
     class MscConn implements ServiceConnection {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.d("MSC", "Service Connected");
+            Logger.i("Service Connected");
 
             final SharedPreferences sp = getSharedPreferences("MSC", MODE_PRIVATE);
 
@@ -38,7 +40,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Log.d("MSC", "Service Disconnected");
+            Logger.i("Service Disconnected");
         }
 
         void finished() {
@@ -76,7 +78,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (MainActivity.this.getResources().getText(R.string.stopservice).equals(btStart.getText().toString())) {
-                    Log.d("MSC", "Service Stopped");
+                    Logger.i("Service Stopped");
                     stopService();
                 } else {
                     int hitCount = Integer.parseInt(etHitCount.getText().toString());
@@ -98,7 +100,7 @@ public class MainActivity extends Activity {
                     et.putInt("Inteval", inteval);
                     et.apply();
 
-                    Log.d("MSC", "Create Service");
+                    Logger.i("Create Service");
                     Intent intent = new Intent(MainActivity.this, MscService.class);
                     if (bindService(intent, sc, Context.BIND_AUTO_CREATE)) {
                         btStart.setText(R.string.stopservice);
@@ -113,7 +115,7 @@ public class MainActivity extends Activity {
             unbindService(sc);
             ((Button) findViewById(R.id.btStart)).setText(R.string.startservice);
         } catch (Exception e) {
-            Log.d("MSC", e.toString());
+            Logger.i(e.toString());
         }
     }
 }
