@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
@@ -21,15 +22,17 @@ public class MainActivity extends Activity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.d("MSC", "Service Connected");
 
+            final SharedPreferences sp = getSharedPreferences("MSC", MODE_PRIVATE);
+
             DisplayMetrics dm = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(dm);
 
             MscService.MscBinder binder = (MscService.MscBinder)service;
-            binder.init(this, GlobleUtil.getInt("Hour", 10),
-                    GlobleUtil.getInt("Minute", 0),
-                    GlobleUtil.getInt("HitCount", 1),
-                    GlobleUtil.getInt("Delay", 0),
-                    GlobleUtil.getInt("Inteval", 100),
+            binder.init(this, sp.getInt("Hour", 10),
+                    sp.getInt("Minute", 0),
+                    sp.getInt("HitCount", 1),
+                    sp.getInt("Delay", 0),
+                    sp.getInt("Inteval", 100),
                     dm.widthPixels, dm.heightPixels);
         }
 
@@ -52,25 +55,28 @@ public class MainActivity extends Activity {
 
         sc = new MscConn();
 
+        final SharedPreferences sp = getSharedPreferences("MSC", MODE_PRIVATE);
+
         final TimePicker tpTime = (TimePicker) findViewById(R.id.tpTime);
         tpTime.setIs24HourView(true);
-        tpTime.setCurrentHour(GlobleUtil.getInt("Hour", 10));
-        tpTime.setCurrentMinute(GlobleUtil.getInt("Minute", 0));
+        tpTime.setCurrentHour(sp.getInt("Hour", 10));
+        tpTime.setCurrentMinute(sp.getInt("Minute", 0));
 
         final EditText etHitCount = (EditText)findViewById(R.id.etHitCount);
-        etHitCount.setText(GlobleUtil.getString("HitCount", "1"));
+        etHitCount.setText(String.valueOf(sp.getInt("HitCount", 1)));
 
         final EditText etDelay = (EditText)findViewById(R.id.etDelay);
-        etDelay.setText(GlobleUtil.getString("Delay", "0"));
+        etDelay.setText(String.valueOf(sp.getInt("Delay", 0)));
 
         final EditText etInteval = (EditText)findViewById(R.id.etInteval);
-        etInteval.setText(GlobleUtil.getString("Inteval", "100"));
+        etInteval.setText(String.valueOf(sp.getInt("Inteval", 100)));
 
         final Button btStart = (Button) findViewById(R.id.btStart);
         btStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (MainActivity.this.getResources().getText(R.string.stopservice).equals(btStart.getText().toString())) {
+                    Log.d("MSC", "Service Stopped");
                     stopService();
                 } else {
                     int hitCount = Integer.parseInt(etHitCount.getText().toString());
@@ -83,11 +89,14 @@ public class MainActivity extends Activity {
                         Toast.makeText(MainActivity.this, R.string.promtInteval, Toast.LENGTH_LONG).show();
                         return;
                     }
-                    GlobleUtil.putInt("Hour", tpTime.getCurrentHour());
-                    GlobleUtil.putInt("Minute", tpTime.getCurrentMinute());
-                    GlobleUtil.putInt("HitCount", hitCount);
-                    GlobleUtil.putInt("Delay", Integer.parseInt(etDelay.getText().toString()));
-                    GlobleUtil.putInt("Inteval", inteval);
+
+                    SharedPreferences.Editor et = sp.edit();
+                    et.putInt("Hour", tpTime.getCurrentHour());
+                    et.putInt("Minute", tpTime.getCurrentMinute());
+                    et.putInt("HitCount", hitCount);
+                    et.putInt("Delay", Integer.parseInt(etDelay.getText().toString()));
+                    et.putInt("Inteval", inteval);
+                    et.apply();
 
                     Log.d("MSC", "Create Service");
                     Intent intent = new Intent(MainActivity.this, MscService.class);
@@ -104,7 +113,7 @@ public class MainActivity extends Activity {
             unbindService(sc);
             ((Button) findViewById(R.id.btStart)).setText(R.string.startservice);
         } catch (Exception e) {
-
+            Log.d("MSC", e.toString());
         }
     }
 }

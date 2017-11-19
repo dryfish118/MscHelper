@@ -62,8 +62,9 @@ public class  MscService extends Service {
                                 Thread.sleep(inteval + r.nextInt(inteval / 4) - inteval / 8);
                             }
                         } catch (Exception e) {
-
+                            Log.d("MSC", e.toString());
                         }
+                        Log.d("MSC", "Service Finished");
                         conn.finished();
                         return;
                     }
