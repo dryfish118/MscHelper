@@ -5,22 +5,21 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.DisplayMetrics;
 import android.util.Log;
 
 import java.util.Calendar;
 import java.util.Random;
 import java.util.TimeZone;
-import java.util.concurrent.ExecutionException;
 
 public class  MscService extends Service {
     class MscBinder extends Binder {
-        void init(final int hour, final int minute, final int count,
-                  final int inteval, final int w, final int h) {
+        void init(final MainActivity.MscConn conn, final int hour, final int minute, final int count,
+                  final int delay, final int inteval, final int w, final int h) {
             Log.d("MSC", "Service init " +
                     "(Hour:" + hour +
                     ")(Minute:" + minute +
                     ")(Count:" + count +
+                    ")(Delay:" + delay +
                     ")(Inteval:" + inteval +
                     ")(Width:" + w +
                     ")(Height:" + h + ")");
@@ -34,7 +33,7 @@ public class  MscService extends Service {
             int cMinute = cal.get(Calendar.MINUTE);
             int cSecond = cal.get(Calendar.SECOND);
             int millis = (hour * 60  + minute) * 60 - (cHour * 60  + cMinute) * 60 - cSecond - 1;
-            Log.d("MSC", "Start tap after " + (millis + 1));
+            Log.d("MSC", "Start tap after " + (millis + 1) + " '");
 
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -54,13 +53,18 @@ public class  MscService extends Service {
                         int x = w * (r.nextInt(8) + 1) / 10;
                         int y = h - 30 - (r.nextInt(6) - 3);
                         try {
+                            if (delay != 0) {
+                                Log.d("MSC", "Delay " + delay);
+                                Thread.sleep(delay);
+                            }
                             for (int i = 0; i < count; i++) {
                                 ShellUtil.tap(x + r.nextInt(6) - 3, y + r.nextInt(6) - 3);
-                                Thread.sleep(inteval + r.nextInt(25));
+                                Thread.sleep(inteval + r.nextInt(inteval / 4) - inteval / 8);
                             }
                         } catch (Exception e) {
 
                         }
+                        conn.finished();
                         return;
                     }
                     handler.postDelayed(this, 30);

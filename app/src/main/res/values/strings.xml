@@ -1,10 +1,13 @@
 <resources>
     <string name="app_name">MscHelper</string>
-    <string name="start">启动</string>
+    <string name="startservice">启动服务</string>
+    <string name="stopservice">停止服务</string>
     <string name="hitcount">点击次数：</string>
     <string name="hitCountHint">输入1到10之间的数字</string>
     <string name="hitInteval">间隔时间（毫秒）：</string>
     <string name="hitIntevalHint">输入点击的时间间隔</string>
+    <string name="delayTime">延迟时间（毫秒）：</string>
+    <string name="delayTimeHint">启动点击前延迟的时间</string>
     <string name="promtHitCount">输入点击次数</string>
     <string name="promtInteval">输入间隔时间</string>
 </resources>
