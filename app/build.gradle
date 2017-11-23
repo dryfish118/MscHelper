@@ -9,11 +9,11 @@ android {
             storePassword '111111'
         }
     }
-    compileSdkVersion 21
+    compileSdkVersion 19
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.tao.mschelper"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -35,6 +35,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:21.+'
+    compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.orhanobut:logger:1.15'
 }
