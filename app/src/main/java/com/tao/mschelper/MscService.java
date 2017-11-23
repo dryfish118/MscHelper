@@ -15,16 +15,20 @@ import java.util.TimeZone;
 
 public class  MscService extends Service {
     class MscBinder extends Binder {
-        void init(final MainActivity.MscConn conn, final int hour, final int minute, final int count,
+        void init(final MainActivity.MscConn conn, int deviation,
+                  final int hour, final int minute, final int count,
                   final int delay, final int inteval, final int w, final int h) {
             Logger.i("Service init " +
-                    "(Hour:" + hour +
+                    "(Deviation:" + deviation +
+                    ")(Hour:" + hour +
                     ")(Minute:" + minute +
                     ")(Count:" + count +
                     ")(Delay:" + delay +
                     ")(Inteval:" + inteval +
                     ")(Width:" + w +
                     ")(Height:" + h + ")");
+
+            final int startTime = (hour * 60 + minute) * 60 + deviation;
 
             Calendar cal = Calendar.getInstance();
             cal.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
@@ -34,7 +38,7 @@ public class  MscService extends Service {
             }
             int cMinute = cal.get(Calendar.MINUTE);
             int cSecond = cal.get(Calendar.SECOND);
-            int millis = (hour * 60  + minute) * 60 - (cHour * 60  + cMinute) * 60 - cSecond - 1;
+            int millis = startTime - (cHour * 60  + cMinute) * 60 - cSecond - 1;
             Logger.i("Start tap after " + (millis + 1) + " '");
 
             final Handler handler = new Handler();
@@ -50,7 +54,7 @@ public class  MscService extends Service {
                     int cMinute = cal.get(Calendar.MINUTE);
                     int cSecond = cal.get(Calendar.SECOND);
                     Logger.i("Current time " + cHour + ":" + cMinute + ":" + cSecond);
-                    if (cHour == hour && cMinute == minute) {
+                    if ((cHour * 60 + cMinute) * 60 + cSecond == startTime) {
                         Random r = new Random();
                         int x = w * (r.nextInt(8) + 1) / 10;
                         int y = h - 30 - (r.nextInt(6) - 3);

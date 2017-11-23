@@ -30,7 +30,8 @@ public class MainActivity extends Activity {
             getWindowManager().getDefaultDisplay().getMetrics(dm);
 
             MscService.MscBinder binder = (MscService.MscBinder)service;
-            binder.init(this, sp.getInt("Hour", 10),
+            binder.init(this, sp.getInt("Deviation", 0),
+                    sp.getInt("Hour", 10),
                     sp.getInt("Minute", 0),
                     sp.getInt("HitCount", 1),
                     sp.getInt("Delay", 0),
@@ -64,6 +65,9 @@ public class MainActivity extends Activity {
         tpTime.setCurrentHour(sp.getInt("Hour", 10));
         tpTime.setCurrentMinute(sp.getInt("Minute", 0));
 
+        final EditText etDeviation = (EditText)findViewById(R.id.etDeviation);
+        etDeviation.setText(String.valueOf(sp.getInt("Deviation", 0)));
+
         final EditText etHitCount = (EditText)findViewById(R.id.etHitCount);
         etHitCount.setText(String.valueOf(sp.getInt("HitCount", 1)));
 
@@ -93,6 +97,7 @@ public class MainActivity extends Activity {
                     }
 
                     SharedPreferences.Editor et = sp.edit();
+                    et.putInt("Deviation", Integer.parseInt(etDeviation.getText().toString()));
                     et.putInt("Hour", tpTime.getCurrentHour());
                     et.putInt("Minute", tpTime.getCurrentMinute());
                     et.putInt("HitCount", hitCount);

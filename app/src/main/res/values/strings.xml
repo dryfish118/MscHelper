@@ -10,4 +10,6 @@
     <string name="delayTimeHint">启动点击前延迟的时间</string>
     <string name="promtHitCount">输入点击次数</string>
     <string name="promtInteval">输入间隔时间</string>
+    <string name="deviationTime">误差时间（秒）：</string>
+    <string name="deviationTimeHint">输入系统与倒计时的误差时间</string>
 </resources>
