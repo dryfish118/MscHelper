@@ -1,9 +1,6 @@
 package com.tao.mschelper;
 
 import android.graphics.Point;
-import android.util.Log;
-
-import com.orhanobut.logger.Logger;
 
 import java.io.DataOutputStream;
 import java.io.OutputStream;
@@ -38,7 +35,7 @@ public class ShellUtil {
 
     public static void tap(int x, int y) {
         String cmd = "input tap " + x + " " + y;
-        Logger.i(cmd);
+        GlobleUtil.log(cmd);
         execCmd(cmd);
     }
 

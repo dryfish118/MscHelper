@@ -16,13 +16,11 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.orhanobut.logger.Logger;
-
 public class MainActivity extends Activity {
     class MscConn implements ServiceConnection {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Logger.i("Service Connected");
+            GlobleUtil.log("Service Connected");
 
             final SharedPreferences sp = getSharedPreferences("MSC", MODE_PRIVATE);
 
@@ -41,7 +39,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Logger.i("Service Disconnected");
+            GlobleUtil.log("Service Disconnected");
         }
 
         void finished() {
@@ -82,7 +80,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (MainActivity.this.getResources().getText(R.string.stopservice).equals(btStart.getText().toString())) {
-                    Logger.i("Service Stopped");
+                    GlobleUtil.log("Service Stopped");
                     stopService();
                 } else {
                     int hitCount = Integer.parseInt(etHitCount.getText().toString());
@@ -105,7 +103,7 @@ public class MainActivity extends Activity {
                     et.putInt("Inteval", inteval);
                     et.apply();
 
-                    Logger.i("Create Service");
+                    GlobleUtil.log("Create Service");
                     Intent intent = new Intent(MainActivity.this, MscService.class);
                     if (bindService(intent, sc, Context.BIND_AUTO_CREATE)) {
                         btStart.setText(R.string.stopservice);
@@ -120,7 +118,7 @@ public class MainActivity extends Activity {
             unbindService(sc);
             ((Button) findViewById(R.id.btStart)).setText(R.string.startservice);
         } catch (Exception e) {
-            Logger.i(e.toString());
+            GlobleUtil.log(e.toString());
         }
     }
 }
